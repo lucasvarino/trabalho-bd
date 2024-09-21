@@ -28,10 +28,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        dump('Iniciando a criação de registros');
         // Criar 100 Clientes
-        $clientes = ClienteFactory::new()->count(100)->create();
+        $clientes = ClienteFactory::new()->count(1000)->create();
 
         // Criar 10 Tipos de Pacotes
         $tipoPacote = TipoPacoteFactory::new()->count(10)->create();
@@ -48,12 +47,16 @@ class DatabaseSeeder extends Seeder
         // Criar 10 companhias aéreas
         $companhias = CompanhiaAereaFactory::new()->count(10)->create();
 
+        dump('Registros Simples criados com sucesso');
+
         // Criar 100 Serviços Adicionais de forma ordenada
         $servicos = ServicoAdicional::factory()
-            ->count(100)
+            ->count(2000)
             ->create();
-        
-        $servicos->each(function ($servico, $index) use ($companhias) {
+        dump('Serviços Adicionais criados com sucesso');
+
+        $servicos->each(function ($servico, $index) use ($companhias, $servicos) {
+            dump('Linkando Serviço Adicional ' . $servico->id . "/{$servicos->count()}");
             if($index % 4 === 0){
                 Voo::factory(['id' => $servico->id, "companhiaaereaid" => $companhias->random()->id])
                     ->create();
@@ -72,7 +75,7 @@ class DatabaseSeeder extends Seeder
 
         // Criar 10 pacotes de viagem
         $pacotes = PacoteViagem::factory()
-            ->count(10)
+            ->count(1000)
             ->sequence(
                 fn ($sequence) => [
                     'tipopacoteid' => $tipoPacote->random()->id,
@@ -81,13 +84,15 @@ class DatabaseSeeder extends Seeder
             ->create();
         
         //Criando relações com os hoteis
-        $pacotes->each(function ($pacote) use ($hoteis, $destinos) {
+        $pacotes->each(function ($pacote, $i) use ($hoteis, $destinos, $pacotes) {
+            dump('Linkando Pacote de Viagens ' . $i . "/{$pacotes->count()}");
             $hoteis->random()->pacotesViagem()->attach($pacote);
             $destinos->random()->pacotesViagem()->attach($pacote);
         });
 
+        dump('Reservas serão criadas');
         $reservas = Reserva::factory()
-            ->count(100)
+            ->count(50000)
             ->sequence(
                 fn ($sequence) => [
                     'clienteid' => $clientes->random()->id,
@@ -96,8 +101,10 @@ class DatabaseSeeder extends Seeder
                 ]
             )
             ->create();
+        dump('Reservas criadas com sucesso');
         
-        $reservas->each(function ($reserva) use ($servicos) {
+        $reservas->each(function ($reserva, $i) use ($servicos, $reservas) {
+            dump('Linkando Reservas ' . $i . "/{$reservas->count()}");
             $qtd_servicos = rand(0, 5);
             if($qtd_servicos > 0)
                 $reserva->servicosAdicionais()->attach($servicos->random($qtd_servicos));

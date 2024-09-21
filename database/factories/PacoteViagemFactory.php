@@ -16,7 +16,7 @@ class PacoteViagemFactory extends Factory
      */
     public function definition(): array
     {
-        $data_de_partida = $this->faker->dateTimeBetween('now', '+1 year')->format('Y-m-d');
+        $data_de_partida = $this->faker->dateTimeBetween('now + 1 day', '+1 year')->format('Y-m-d');
         $data_de_retorno = $this->faker->dateTimeBetween($data_de_partida . '+ 1 day', $data_de_partida . ' +1 week')->format('Y-m-d');
 
         return [
