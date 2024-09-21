@@ -10,6 +10,9 @@ class Cliente extends Model
 {
     use HasFactory;
 
+    protected $table = 'cliente';
+    public $timestamps = false;
+
     public function reservas(): HasMany
     {
         return $this->hasMany(Reserva::class);

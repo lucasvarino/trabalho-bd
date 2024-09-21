@@ -10,6 +10,9 @@ class Passeio extends Model
 {
     use HasFactory;
 
+    protected $table = 'passeio';
+    public $timestamps = false;
+
     public function servicoAdicional(): BelongsTo
     {
         return $this->belongsTo(ServicoAdicional::class);

@@ -10,6 +10,9 @@ class Academia extends Model
 {
     use HasFactory;
 
+    protected $table = 'academia';
+    public $timestamps = false;
+
     public function servicoAdicional(): BelongsTo
     {
         return $this->belongsTo(ServicoAdicional::class);

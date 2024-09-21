@@ -9,8 +9,11 @@ class DestinoTuristico extends Model
 {
     use HasFactory;
 
+    protected $table = 'destinoturistico';
+    public $timestamps = false;
+
     public function pacotesViagem()
     {
-        return $this->belongsToMany(PacoteViagem::class, 'destino_turistico_pacote_viagem');
+        return $this->belongsToMany(PacoteViagem::class, 'destinoturisticopacoteviagem', 'destinoturisticoid', 'pacoteviagemid');
     }
 }

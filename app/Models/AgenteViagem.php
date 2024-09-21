@@ -10,6 +10,9 @@ class AgenteViagem extends Model
 {
     use HasFactory;
 
+    protected $table = 'agenteviagem';
+    public $timestamps = false;
+
     public function reservas(): HasMany
     {
         return $this->hasMany(Reserva::class);

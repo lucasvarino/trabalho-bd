@@ -12,6 +12,9 @@ class PacoteViagem extends Model
 {
     use HasFactory;
 
+    protected $table = 'pacoteviagem';
+    public $timestamps = false;
+
     public function tipoPacote(): BelongsTo
     {
         return $this->belongsTo(TipoPacote::class);
@@ -19,12 +22,12 @@ class PacoteViagem extends Model
 
     public function hoteis(): BelongsToMany
     {
-        return $this->belongsToMany(Hotel::class, 'hotel_pacote_viagem');
+        return $this->belongsToMany(Hotel::class, 'hotelpacoteviagem', 'pacoteviagemid', 'hotelid');
     }
 
     public function destinosTuristicos(): BelongsToMany
     {
-        return $this->belongsToMany(DestinoTuristico::class, 'destino_turistico_pacote_viagem');
+        return $this->belongsToMany(DestinoTuristico::class, 'destinoturisticopacoteviagem', 'pacoteviagemid', 'destinoturisticoid');
     }
 
     public function reservas(): HasMany

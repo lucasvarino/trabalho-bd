@@ -10,6 +10,9 @@ class Pagamento extends Model
 {
     use HasFactory;
 
+    protected $table = 'pagamento';
+    public $timestamps = false;
+
     public function reserva(): BelongsTo
     {
         return $this->belongsTo(Reserva::class);

@@ -10,8 +10,11 @@ class Hotel extends Model
 {
     use HasFactory;
 
+    protected $table = 'hotel';
+    public $timestamps = false;
+
     public function pacotesViagem(): BelongsToMany
     {
-        return $this->belongsToMany(PacoteViagem::class, 'hotel_pacote_viagem');
+        return $this->belongsToMany(PacoteViagem::class, 'hotelpacoteviagem', 'hotelid', 'pacoteviagemid');
     }
 }

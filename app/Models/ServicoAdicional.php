@@ -9,6 +9,9 @@ class ServicoAdicional extends Model
 {
     use HasFactory;
 
+    protected $table = 'servicoadicional';
+    public $timestamps = false;
+
     public function academia()
     {
         return $this->hasOne(Academia::class);
@@ -31,6 +34,6 @@ class ServicoAdicional extends Model
 
     public function reservas()
     {
-        return $this->belongsToMany(Reserva::class, 'reserva_servico_adicional');
+        return $this->belongsToMany(Reserva::class, 'reservaservicoadicional', 'servicoadicionalid', 'reservaid');
     }
 }

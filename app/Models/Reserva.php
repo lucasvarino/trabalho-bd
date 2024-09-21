@@ -12,6 +12,9 @@ class Reserva extends Model
 {
     use HasFactory;
 
+    protected $table = 'reserva';
+    public $timestamps = false;
+
     public function pagamento()
     {
         return $this->hasOne(Pagamento::class);
@@ -34,7 +37,7 @@ class Reserva extends Model
 
     public function servicosAdicionais(): BelongsToMany
     {
-        return $this->belongsToMany(ServicoAdicional::class, 'reserva_servico_adicional');
+        return $this->belongsToMany(ServicoAdicional::class, 'reservaservicoadicional', 'reservaid', 'servicoadicionalid');
     }
 
     public function agenteViagem(): BelongsTo

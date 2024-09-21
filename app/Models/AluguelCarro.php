@@ -10,6 +10,9 @@ class AluguelCarro extends Model
 {
     use HasFactory;
 
+    protected $table = 'aluguelcarro';
+    public $timestamps = false;
+
     public function servicoAdicional(): BelongsTo
     {
         return $this->belongsTo(ServicoAdicional::class);

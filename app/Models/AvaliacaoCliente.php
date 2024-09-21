@@ -10,6 +10,9 @@ class AvaliacaoCliente extends Model
 {
     use HasFactory;
 
+    protected $table = 'avaliacaocliente';
+    public $timestamps = false;
+
     public function reserva(): BelongsTo
     {
         return $this->belongsTo(Reserva::class);

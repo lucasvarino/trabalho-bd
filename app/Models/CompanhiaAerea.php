@@ -9,6 +9,9 @@ class CompanhiaAerea extends Model
 {
     use HasFactory;
 
+    protected $table = 'companhiaaerea';
+    public $timestamps = false;
+
     public function voos()
     {
         return $this->hasMany(Voo::class);

@@ -10,6 +10,9 @@ class Voo extends Model
 {
     use HasFactory;
 
+    protected $table = 'voo';
+    public $timestamps = false;
+
     public function servicoAdicional(): BelongsTo
     {
         return $this->belongsTo(ServicoAdicional::class);
