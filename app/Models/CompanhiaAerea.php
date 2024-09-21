@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class CompanhiaAerea extends Model
 {
     use HasFactory;
+
+    public function voos()
+    {
+        return $this->hasMany(Voo::class);
+    }
 }
