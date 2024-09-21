@@ -17,8 +17,8 @@ class VooFactory extends Factory
     public function definition(): array
     {
         return [
-            "horarioPartida" => $this->faker->time("H:i"),
-            "horarioChegada" => $this->faker->time("H:i"),
+            "horariopartida" => $this->faker->time("H:i"),
+            "horariochegada" => $this->faker->time("H:i"),
         ];
     }
 }

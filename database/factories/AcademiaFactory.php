@@ -17,7 +17,7 @@ class AcademiaFactory extends Factory
     public function definition(): array
     {
         return [
-            "horarioFuncionamento" => "Seg - Sex: {$this->faker->time()} - {$this->faker->time()}",
+            "horariofuncionamento" => "Seg - Sex: {$this->faker->time()} - {$this->faker->time()}",
             "endereco" => $this->faker->address(),
         ];
     }

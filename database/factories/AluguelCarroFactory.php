@@ -16,11 +16,12 @@ class AluguelCarroFactory extends Factory
      */
     public function definition(): array
     {
-        $data_inicio = $this->faker->date();
-        $data_fim = $this->faker->dateTimeBetween($data_inicio, '+1 year')->format('Y-m-d');
+        $data_inicio = $this->faker->dateTimeBetween("now", '+1 year')->format('Y-m-d');
+        $data_fim = $this->faker->dateTimeBetween($data_inicio . " +1 day", $data_inicio . ' +1 year')->format('Y-m-d');
+
         return [
-            "dataInicio" => $data_inicio,
-            "dataFim" => $data_fim,
+            "datainicio" => $data_inicio,
+            "datafim" => $data_fim,
             "placa" => $this->faker->regexify('[A-Z]{3}-[0-9]{4}'),
         ];
     }

@@ -19,7 +19,7 @@ class ClienteFactory extends Factory
         return [
             "nome" => $this->faker->name(),
             "contato" => $this->faker->email(),
-            "identidade" => $this->faker->regexify('[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}'),
+            "identidade" => $this->faker->regexify('[0-9]{3}[0-9]{3}[0-9]{3}[0-9]{2}'),
         ];
     }
 }

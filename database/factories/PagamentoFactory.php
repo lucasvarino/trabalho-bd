@@ -18,8 +18,8 @@ class PagamentoFactory extends Factory
     {
         return [
             "valor" => $this->faker->randomFloat(2, 0, 1000),
-            "dataPagamento" => $this->faker->date(),
-            "metodoPagamento" => $this->faker->randomElement(["Dinheiro", "Cartão de Crédito", "Cartão de Débito", "PIX", "Boleto"]),
+            "datapagamento" => $this->faker->date(),
+            "metodopagamento" => $this->faker->randomElement(["Dinheiro", "Cartão de Crédito", "Cartão de Débito", "PIX", "Boleto"]),
         ];
     }
 }

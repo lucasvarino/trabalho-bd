@@ -20,7 +20,7 @@ class TipoPacoteFactory extends Factory
         return [
             "nome" => $this->faker->word() . ' - ' . $tematica,
             "tematica" => $tematica,
-            "duracao" => $this->faker->random_int(1, 30),
+            "duracao" => $this->faker->numberBetween(1, 30),
         ];
     }
 }

@@ -17,7 +17,7 @@ class ReservaFactory extends Factory
     public function definition(): array
     {
         return [
-            "dataReserva" => $this->faker->date(),
+            "datareserva" => $this->faker->date(),
             "status" => $this->faker->randomElement(["Pendente", "Confirmada", "Cancelada"]),
         ];
     }

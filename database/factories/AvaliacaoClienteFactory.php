@@ -17,7 +17,7 @@ class AvaliacaoClienteFactory extends Factory
     public function definition(): array
     {
         return [
-            "nota" => $this->faker->random_int(0, 5),
+            "nota" => $this->faker->numberBetween(0, 5),
             "comentario" => $this->faker->text(),
         ];
     }
