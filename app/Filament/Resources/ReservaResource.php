@@ -7,6 +7,7 @@ use App\Models\AgenteViagem;
 use App\Models\AvaliacaoCliente;
 use App\Models\Cliente;
 use App\Models\PacoteViagem;
+use App\Models\Pagamento;
 use App\Models\Reserva;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -27,7 +28,7 @@ class ReservaResource extends Resource
 {
     protected static ?string $model = Reserva::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
     public static function form(Form $form): Form
     {
@@ -156,10 +157,13 @@ class ReservaResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('Avaliar')
                     ->model(AvaliacaoCliente::class)
-                    ->color('success')
+                    ->color('info')
+
                     ->visible(function(Reserva $record):bool{
-                        return $record->status === "Confirmada";
+                        $alreadyRated = AvaliacaoCliente::where('reservaid', $record->id)->exists();
+                        return ($record->status === "Confirmada" && !$alreadyRated);
                     })
+                    
                     ->form([
                         Forms\Components\TextInput::make('nota')
                             ->required()
@@ -182,7 +186,55 @@ class ReservaResource extends Resource
                         ->success()
                         ->send();
                     }),
+
+                    Tables\Actions\Action::make('Pagar')
+                        ->model(Pagamento::class)
+                        ->color('success')
+
+                        ->visible(function(Reserva $record):bool{
+                            $alreadyPaid = Pagamento::where('reservaid', $record->id)->exists();
+                            return $record->status === "Pendente" && $alreadyPaid === false;
+                        })
+
+                        ->form([
+                            Forms\Components\TextInput::make('valor')
+                            ->label('Valor')
+                            ->required()
+                            ->numeric(),
+                            Forms\Components\Select::make('metodopagamento')
+                                ->required()
+                                ->label('Método de Pagamento')
+                                ->options([
+                                    'Dinheiro' => 'Dinheiro',
+                                    'Cartão de Crédito' => 'Cartão de Crédito',
+                                    'Cartão de Débito' => 'Cartão de Débito',
+                                    'PIX' => 'Pix',
+                                    'Boleto' => 'Boleto',
+                                ]),
+                            Forms\Components\DatePicker::make('datapagamento')
+                                ->label('Data de Pagamento')
+                                ->required(),
+                        ])
+
+                        ->action(function (array $data, Reserva $record): void {
+                            Pagamento::create([
+                                "valor" => $data['valor'],
+                                "metodopagamento" => $data['metodopagamento'],
+                                "datapagamento" => $data['datapagamento'],
+                                "reservaid" => $record->id
+                            ]);
+
+                            $record->update([
+                                "status" => "Confirmada"
+                            ]);
+
+                            Notification::make()
+                            ->title('Pagamento realizado com sucesso!')
+                            ->success()
+                            ->send();
+                        }),
                 ]),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
