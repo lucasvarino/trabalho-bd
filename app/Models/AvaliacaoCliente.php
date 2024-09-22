@@ -12,9 +12,21 @@ class AvaliacaoCliente extends Model
 
     protected $table = 'avaliacaocliente';
     public $timestamps = false;
+    protected $guarded = [];
 
     public function reserva(): BelongsTo
     {
-        return $this->belongsTo(Reserva::class);
+        return $this->belongsTo(Reserva::class, 'reservaid');
+    }
+
+    public function cliente()
+    {
+        return $this->hasOneThrough(Cliente::class,
+            Reserva::class,
+            'id',
+            'id',
+            'reservaid',
+            'clienteid'
+        );
     }
 }
