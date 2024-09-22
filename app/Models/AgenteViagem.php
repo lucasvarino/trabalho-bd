@@ -12,6 +12,7 @@ class AgenteViagem extends Model
 
     protected $table = 'agenteviagem';
     public $timestamps = false;
+    public $guarded = [];
 
     public function reservas(): HasMany
     {
