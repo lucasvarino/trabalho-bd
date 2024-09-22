@@ -82,21 +82,21 @@ class AcademiaResource extends Resource
 
                         return $data;
                     })
-                ->using(function ($record, $data) {
-                    $prefix = config('database.connections.pgsql.search_path');
-                    return DB::transaction(function () use ($record, $prefix, $data) {
-                        DB::statement("UPDATE {$prefix}.servicoadicional SET nome = :nome, descricao = :descricao, preco = :preco WHERE id = :id", [
-                            'nome' => $data['nome'],
-                            'descricao' => $data['descricao'],
-                            'preco' => $data['preco'],
-                            'id' => $record->id,
-                        ]);
+                    ->using(function ($record, $data) {
+                        $prefix = config('database.connections.pgsql.search_path');
+                        return DB::transaction(function () use ($record, $prefix, $data) {
+                            DB::statement("UPDATE {$prefix}.servicoadicional SET nome = :nome, descricao = :descricao, preco = :preco WHERE id = :id", [
+                                'nome' => $data['nome'],
+                                'descricao' => $data['descricao'],
+                                'preco' => $data['preco'],
+                                'id' => $record->id,
+                            ]);
 
-                        DB::statement("UPDATE {$prefix}.academia SET endereco = :endereco, horariofuncionamento = :horariofuncionamento WHERE id = :id", [
-                            'endereco' => $data['endereco'],
-                            'horariofuncionamento' => $data['horariofuncionamento'],
-                            'id' => $record->id,
-                        ]);
+                            DB::statement("UPDATE {$prefix}.academia SET endereco = :endereco, horariofuncionamento = :horariofuncionamento WHERE id = :id", [
+                                'endereco' => $data['endereco'],
+                                'horariofuncionamento' => $data['horariofuncionamento'],
+                                'id' => $record->id,
+                            ]);
                     });
                 }),
                 Tables\Actions\DeleteAction::make()
