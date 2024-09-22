@@ -23,6 +23,20 @@ class ManageReservas extends ManageRecords
                     $clienteId = $data['clienteid'];
                     $pacoteViagemId = $data['pacoteviagemid'];
 
+                    // Obter se o cliente tem reservas pendentes
+                    $reservaPendente = Reserva::where('clienteid', $clienteId)
+                        ->where('status', 'Pendente')
+                        ->exists();
+
+                    if($reservaPendente) {
+                        Notification::make()
+                            ->danger()
+                            ->title('O cliente possui reservas pendentes')
+                            ->color('danger')
+                            ->send();
+                        return;
+                    }
+
                     // Obter o pacote viagem e suas datas
                     $pacoteViagem = PacoteViagem::find($pacoteViagemId);
                     if ($pacoteViagem) {
