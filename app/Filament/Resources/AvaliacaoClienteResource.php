@@ -58,7 +58,8 @@ class AvaliacaoClienteResource extends Resource
                         $nomeCliente = $record->reserva->cliente->nome;
                         return $destino . ' - ' . $nomeCliente;
                     })
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //
@@ -79,7 +80,7 @@ class AvaliacaoClienteResource extends Resource
                             })          
                     ]),
                 Tables\Actions\DeleteAction::make(),
-            ]);
+                ]);
     }
 
     public static function getPages(): array
