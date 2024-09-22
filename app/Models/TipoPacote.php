@@ -11,6 +11,7 @@ class TipoPacote extends Model
 
     protected $table = 'tipopacote';
     public $timestamps = false;
+    protected $guarded = [];
 
     public function pacotesViagem()
     {

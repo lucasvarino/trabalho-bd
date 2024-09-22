@@ -14,10 +14,11 @@ class PacoteViagem extends Model
 
     protected $table = 'pacoteviagem';
     public $timestamps = false;
+    protected $guarded = [];
 
     public function tipoPacote(): BelongsTo
     {
-        return $this->belongsTo(TipoPacote::class);
+        return $this->belongsTo(TipoPacote::class, 'tipopacoteid');
     }
 
     public function hoteis(): BelongsToMany
