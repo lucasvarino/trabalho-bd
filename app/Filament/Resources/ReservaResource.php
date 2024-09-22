@@ -3,13 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReservaResource\Pages;
-use App\Filament\Resources\ReservaResource\RelationManagers;
 use App\Models\AgenteViagem;
 use App\Models\AvaliacaoCliente;
 use App\Models\Cliente;
 use App\Models\PacoteViagem;
 use App\Models\Pagamento;
 use App\Models\Reserva;
+use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
@@ -117,8 +117,30 @@ class ReservaResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\EditAction::make()
+                    ->using(function (Reserva $reserva, array $data) {
+                        $currentDate = Carbon::now();
+                        $dataPartida = Carbon::make($reserva->pacoteviagem->datadepartida);
 
-                Tables\Actions\EditAction::make(),
+                        if ($data['status'] === 'Cancelada' && $dataPartida->diffInHours($currentDate) <= 24) {
+                            Notification::make()
+                                ->danger()
+                                ->color('danger')
+                                ->title('Não é possível cancelar reservas 24 horas antes da data de partida.')
+                                ->send();
+
+                            return redirect()->back();
+                        }
+                        $reserva->update($data);
+
+                        Notification::make()
+                            ->success()
+                            ->title('Reserva atualizada com sucesso.')
+                            ->send();
+
+                        return redirect()->back();
+                    })
+                    ->successNotification(null),
                 Tables\Actions\DeleteAction::make(),
 
                 Tables\Actions\ActionGroup::make([
@@ -139,7 +161,7 @@ class ReservaResource extends Resource
                             ->minValue(0)
                             ->maxValue(5)
                             ->live(),
-                        Forms\Components\Textarea::make('comentario')             
+                        Forms\Components\Textarea::make('comentario')
                     ])
                     ->action(function (array $data, Reserva $record): void {
                         AvaliacaoCliente::create([
