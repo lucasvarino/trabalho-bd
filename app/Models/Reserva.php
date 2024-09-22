@@ -14,6 +14,7 @@ class Reserva extends Model
 
     protected $table = 'reserva';
     public $timestamps = false;
+    protected $guarded = [];
 
     public function pagamento()
     {
@@ -22,12 +23,12 @@ class Reserva extends Model
 
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsTo(Cliente::class, 'clienteid');
     }
 
-    public function pacoteViagem(): HasOne
+    public function pacoteViagem(): BelongsTo
     {
-        return $this->hasOne(PacoteViagem::class);
+        return $this->belongsTo(PacoteViagem::class, 'pacoteviagemid');
     }
 
     public function avaliacaoCliente(): HasOne
@@ -42,7 +43,7 @@ class Reserva extends Model
 
     public function agenteViagem(): BelongsTo
     {
-        return $this->belongsTo(AgenteViagem::class);
+        return $this->belongsTo(AgenteViagem::class, 'agenteviagemid');
     }
 
 
