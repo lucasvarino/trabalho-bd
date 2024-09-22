@@ -130,12 +130,23 @@ class ReservaResource extends Resource
 
                             return redirect()->back();
                         }
-                        $reserva->update($data);
 
-                        Notification::make()
-                            ->success()
-                            ->title('Reserva atualizada com sucesso.')
-                            ->send();
+                        DB::transaction(function () use ($reserva, $data) {
+                            $reserva->update($data);
+
+                            if ($data['status'] === 'Cancelada') {
+                                $pagamento = DB::table('pagamento')
+                                    ->where('reservaid', $reserva->id)
+                                    ->first();
+
+                                if ($pagamento) $pagamento->delete();
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title('Reserva atualizada com sucesso')
+                                ->send();
+                        });
 
                         return redirect()->back();
                     })
