@@ -122,7 +122,7 @@ class ReservaResource extends Resource
                         $currentDate = Carbon::now();
                         $dataPartida = Carbon::make($reserva->pacoteviagem->datadepartida);
 
-                        if ($data['status'] === 'Cancelada' && $dataPartida->diffInHours($currentDate) <= 24) {
+                        if ($data['status'] === 'Cancelada' && $currentDate->diffInHours($dataPartida) <= 24) {
                             Notification::make()
                                 ->danger()
                                 ->color('danger')
@@ -136,8 +136,7 @@ class ReservaResource extends Resource
                             $reserva->update($data);
 
                             if ($data['status'] === 'Cancelada') {
-                                $pagamento = DB::table('pagamento')
-                                    ->where('reservaid', $reserva->id)
+                                $pagamento = Pagamento::where('reservaid', $reserva->id)
                                     ->first();
 
                                 if ($pagamento) $pagamento->delete();
@@ -163,7 +162,7 @@ class ReservaResource extends Resource
                         $alreadyRated = AvaliacaoCliente::where('reservaid', $record->id)->exists();
                         return ($record->status === "Confirmada" && !$alreadyRated);
                     })
-                    
+
                     ->form([
                         Forms\Components\TextInput::make('nota')
                             ->required()
