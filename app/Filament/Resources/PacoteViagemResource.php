@@ -118,6 +118,12 @@ class PacoteViagemResource extends Resource
                     ->label('Capacidade Máxima')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('classificacao')
+                    ->label('Classificação')
+                    ->state(function (PacoteViagem $pacote) {
+                        return number_format($pacote->reservas->avg('avaliacaoCliente.nota'), 2);
+                    })
+                    ->sortable(),
             ])
             ->filters([
                 //

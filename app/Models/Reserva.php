@@ -33,7 +33,7 @@ class Reserva extends Model
 
     public function avaliacaoCliente(): HasOne
     {
-        return $this->hasOne(AvaliacaoCliente::class);
+        return $this->hasOne(AvaliacaoCliente::class, 'reservaid');
     }
 
     public function servicosAdicionais(): BelongsToMany
