@@ -9,6 +9,7 @@ use App\Models\Cliente;
 use App\Models\PacoteViagem;
 use App\Models\Pagamento;
 use App\Models\Reserva;
+use App\Models\ServicoAdicional;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -71,6 +72,12 @@ class ReservaResource extends Resource
                 Forms\Components\DatePicker::make('datareserva')
                     ->label('Data da reserva')
                     ->required(),
+                Forms\Components\Select::make('servicosadicionais')
+                    ->label('Serviços adicionais')
+                    ->relationship('servicosadicionais', 'servicoadicionalid')
+                    ->options(ServicoAdicional::all()->pluck('nome', 'id'))
+                    ->searchable()
+                    ->multiple(),
                 Forms\Components\Select::make('status')
                     ->required()
                     ->options([
