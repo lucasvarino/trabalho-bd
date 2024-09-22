@@ -16,7 +16,6 @@ class ManageReservas extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-            ->using(),
         ];
     }
 

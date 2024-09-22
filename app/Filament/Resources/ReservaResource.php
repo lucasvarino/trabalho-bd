@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReservaResource\Pages;
-use App\Filament\Resources\ReservaResource\RelationManagers;
 use App\Models\AgenteViagem;
 use App\Models\AvaliacaoCliente;
 use App\Models\Cliente;
@@ -158,7 +157,7 @@ class ReservaResource extends Resource
                             ->minValue(0)
                             ->maxValue(5)
                             ->live(),
-                        Forms\Components\Textarea::make('comentario')             
+                        Forms\Components\Textarea::make('comentario')
                     ])
                     ->action(function (array $data, Reserva $record): void {
                         AvaliacaoCliente::create([
