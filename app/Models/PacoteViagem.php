@@ -33,6 +33,6 @@ class PacoteViagem extends Model
 
     public function reservas(): HasMany
     {
-        return $this->hasMany(Reserva::class);
+        return $this->hasMany(Reserva::class, 'pacoteviagemid');
     }
 }

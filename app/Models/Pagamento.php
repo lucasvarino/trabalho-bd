@@ -12,6 +12,7 @@ class Pagamento extends Model
 
     protected $table = 'pagamento';
     public $timestamps = false;
+    protected $guarded = [];
 
     public function reserva(): BelongsTo
     {
