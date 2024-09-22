@@ -2,25 +2,24 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AcademiaResource\Pages;
-use App\Filament\Resources\AcademiaResource\RelationManagers;
-use App\Models\Academia;
-use App\Models\ServicoAdicional;
+use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\RawJs;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\AluguelCarro;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\DB;
+use App\Filament\Resources\AluguelCarroResource\Pages;
+use App\Filament\Resources\AluguelCarroResource\RelationManagers;
 
-class AcademiaResource extends Resource
+class AluguelCarroResource extends Resource
 {
-    protected static ?string $model = Academia::class;
+    protected static ?string $model = AluguelCarro::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-trophy';
+    protected static ?string $navigationIcon = 'heroicon-o-truck';
     protected static ?string $navigationGroup = 'Serviços Adicionais';
 
     public static function form(Form $form): Form
@@ -29,21 +28,28 @@ class AcademiaResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('nome')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->label('Nome'),
                 Forms\Components\TextInput::make('descricao')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->label('Descrição'),
                 Forms\Components\TextInput::make('preco')
                     ->label('Preço')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('endereco')
+                    ->numeric()
+                    ->step('0.01'),
+                Forms\Components\DatePicker::make('datainicio')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('horariofuncionamento')
-                    ->label('Horário de Funcionamento')
+                    ->label('Data Início'),
+                Forms\Components\DatePicker::make('datafim')
                     ->required()
-                    ->maxLength(255),
+                    ->label('Data Fim'),
+                Forms\Components\TextInput::make('placa')
+                    ->required()
+                    ->label('Placa')
+                    ->regex('/^[A-Z]{3}-[0-9]{4}$/')
+                    ->maxLength(50),
             ]);
     }
 
@@ -60,10 +66,24 @@ class AcademiaResource extends Resource
                     ->label('Nome'),
                 Tables\Columns\TextColumn::make('servicoAdicional.preco')
                     ->label('Preço'),
-                Tables\Columns\TextColumn::make('endereco')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('horariofuncionamento')
-                    ->label('Horário de Funcionamento')
+                Tables\Columns\TextColumn::make('datainicio')
+                    ->label('Data Início')
+                    ->formatStateUsing(function ($state) {
+                        return Carbon::parse($state)
+                            ->locale('pt_BR') 
+                            ->translatedFormat('d F Y');
+                    })
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('datafim')
+                    ->label('Data Fim')
+                    ->formatStateUsing(function ($state) {
+                        return Carbon::parse($state)
+                            ->locale('pt_BR') 
+                            ->translatedFormat('d F Y');
+                    })
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('placa')
+                    ->label('Placa')
                     ->searchable(),
             ])
             ->filters([
@@ -73,6 +93,7 @@ class AcademiaResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->mutateRecordDataUsing(function ($data) {
                         $prefix = config('database.connections.pgsql.search_path');
+                        
                         $servicoAdicional = DB::select("SELECT * FROM {$prefix}.servicoadicional WHERE id = :id", [
                             'id' => $data['id'],
                         ]);
@@ -92,26 +113,27 @@ class AcademiaResource extends Resource
                                 'id' => $record->id,
                             ]);
 
-                            DB::statement("UPDATE {$prefix}.academia SET endereco = :endereco, horariofuncionamento = :horariofuncionamento WHERE id = :id", [
-                                'endereco' => $data['endereco'],
-                                'horariofuncionamento' => $data['horariofuncionamento'],
+                            DB::statement("UPDATE {$prefix}.aluguelcarro SET datainicio = :datainicio, datafim = :datafim, placa = :placa WHERE id = :id", [
+                                'datainicio' => $data['datainicio'],
+                                'datafim' => $data['datafim'],
+                                'placa' => $data['placa'],
                                 'id' => $record->id,
                             ]);
-                    });
-                }),
+                        });
+                    }),
                 Tables\Actions\DeleteAction::make()
-                ->using(function ($record) {
-                    $prefix = config('database.connections.pgsql.search_path');
-                    return DB::transaction(function () use ($record, $prefix) {
-                        DB::statement("DELETE FROM {$prefix}.academia WHERE id = :id", [
-                            'id' => $record->id,
-                        ]);
+                    ->using(function ($record) {
+                        $prefix = config('database.connections.pgsql.search_path');
+                        return DB::transaction(function () use ($record, $prefix) {
+                            DB::statement("DELETE FROM {$prefix}.aluguelcarro WHERE id = :id", [
+                                'id' => $record->id,
+                            ]);
 
-                        DB::statement("DELETE FROM {$prefix}.servicoadicional WHERE id = :id", [
-                            'id' => $record->id,
-                        ]);
-                    });
-                }),
+                            DB::statement("DELETE FROM {$prefix}.servicoadicional WHERE id = :id", [
+                                'id' => $record->id,
+                            ]);
+                        });
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -123,7 +145,7 @@ class AcademiaResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageAcademias::route('/'),
+            'index' => Pages\ManageAluguelCarros::route('/'),
         ];
     }
 }
