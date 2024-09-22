@@ -15,7 +15,8 @@ class ManageReservas extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->using(),
         ];
     }
 
@@ -25,10 +26,10 @@ class ManageReservas extends ManageRecords
             'all' => Tab::make("Todas reservas"),
             'active' => Tab::make("Reservas confirmadas")
                 ->modifyQueryUsing(fn ($query) => $query->where('status', 'Confirmada')),
-            
+
             'pendants' => Tab::make("Reservas pendente")
                 ->modifyQueryUsing(fn ($query) => $query->where('status', 'Pendente')),
-            
+
             'inactive ' => Tab::make("Reservas canceladas")
             ->modifyQueryUsing(fn ($query) => $query->where('status', 'Cancelada')),
         ];

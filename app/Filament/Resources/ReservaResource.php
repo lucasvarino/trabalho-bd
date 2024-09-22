@@ -8,8 +8,10 @@ use App\Models\AgenteViagem;
 use App\Models\Cliente;
 use App\Models\PacoteViagem;
 use App\Models\Reserva;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -110,7 +112,30 @@ class ReservaResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->using(function (Reserva $reserva, array $data) {
+                        $currentDate = Carbon::now();
+                        $dataPartida = Carbon::make($reserva->pacoteviagem->datadepartida);
+
+                        if ($data['status'] === 'Cancelada' && $dataPartida->diffInHours($currentDate) <= 24) {
+                            Notification::make()
+                                ->danger()
+                                ->color('danger')
+                                ->title('Não é possível cancelar reservas 24 horas antes da data de partida.')
+                                ->send();
+
+                            return redirect()->back();
+                        }
+                        $reserva->update($data);
+
+                        Notification::make()
+                            ->success()
+                            ->title('Reserva atualizada com sucesso.')
+                            ->send();
+
+                        return redirect()->back();
+                    })
+                    ->successNotification(null),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
