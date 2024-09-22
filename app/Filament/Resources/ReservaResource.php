@@ -5,10 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ReservaResource\Pages;
 use App\Filament\Resources\ReservaResource\RelationManagers;
 use App\Models\AgenteViagem;
+use App\Models\AvaliacaoCliente;
 use App\Models\Cliente;
 use App\Models\PacoteViagem;
 use App\Models\Reserva;
 use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -18,6 +22,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class ReservaResource extends Resource
 {
@@ -137,6 +142,37 @@ class ReservaResource extends Resource
                     })
                     ->successNotification(null),
                 Tables\Actions\DeleteAction::make(),
+
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('Avaliar')
+                    ->model(AvaliacaoCliente::class)
+                    ->color('success')
+                    ->visible(function(Reserva $record):bool{
+                        return $record->status === "Confirmada";
+                    })
+                    ->form([
+                        Forms\Components\TextInput::make('nota')
+                            ->required()
+                            ->numeric()
+                            ->step(1)
+                            ->minValue(0)
+                            ->maxValue(5)
+                            ->live(),
+                        Forms\Components\Textarea::make('comentario')             
+                    ])
+                    ->action(function (array $data, Reserva $record): void {
+                        AvaliacaoCliente::create([
+                            "nota" => $data["nota"],
+                            "comentario" => $data["comentario"],
+                            "reservaid" => $record->id
+                        ]);
+
+                        Notification::make()
+                        ->title('Avaliação realizada com sucesso!')
+                        ->success()
+                        ->send();
+                    }),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
