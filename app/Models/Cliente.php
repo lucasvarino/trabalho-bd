@@ -12,6 +12,7 @@ class Cliente extends Model
 
     protected $table = 'cliente';
     public $timestamps = false;
+    protected $guarded = [];
 
     public function reservas(): HasMany
     {
