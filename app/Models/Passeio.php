@@ -15,6 +15,6 @@ class Passeio extends Model
 
     public function servicoAdicional(): BelongsTo
     {
-        return $this->belongsTo(ServicoAdicional::class);
+        return $this->belongsTo(ServicoAdicional::class, "id");
     }
 }
