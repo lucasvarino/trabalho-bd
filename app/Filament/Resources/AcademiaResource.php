@@ -20,7 +20,8 @@ class AcademiaResource extends Resource
 {
     protected static ?string $model = Academia::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-trophy';
+    protected static ?string $navigationGroup = 'Serviços Adicionais';
 
     public static function form(Form $form): Form
     {
