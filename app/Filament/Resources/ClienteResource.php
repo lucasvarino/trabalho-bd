@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Leandrocfe\FilamentPtbrFormFields\Document;
 
 class ClienteResource extends Resource
 {
@@ -31,10 +32,10 @@ class ClienteResource extends Resource
                     ->required()
                     ->label('Contato')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('identidade')
+                Document::make('identidade')
+                    ->cpf()
                     ->required()
                     ->label('Identidade')
-                    ->maxLength(11),
             ]);
     }
 

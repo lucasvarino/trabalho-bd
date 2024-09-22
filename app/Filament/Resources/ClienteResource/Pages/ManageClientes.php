@@ -13,7 +13,11 @@ class ManageClientes extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->mutateFormDataUsing(function (array $data): array {
+                $data['identidade'] = preg_replace('/[^0-9]/', '', $data['identidade']);
+                return $data;
+            }),
         ];
     }
 }
