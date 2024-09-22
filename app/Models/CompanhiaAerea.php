@@ -11,6 +11,7 @@ class CompanhiaAerea extends Model
 
     protected $table = 'companhiaaerea';
     public $timestamps = false;
+    protected $guarded = [];
 
     public function voos()
     {

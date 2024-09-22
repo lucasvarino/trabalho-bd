@@ -12,14 +12,15 @@ class Voo extends Model
 
     protected $table = 'voo';
     public $timestamps = false;
+    protected $guarded = [];
 
     public function servicoAdicional(): BelongsTo
     {
-        return $this->belongsTo(ServicoAdicional::class);
+        return $this->belongsTo(ServicoAdicional::class, 'id');
     }
 
     public function companhiaAerea(): BelongsTo
     {
-        return $this->belongsTo(CompanhiaAerea::class);
+        return $this->belongsTo(CompanhiaAerea::class, 'companhiaaereaid');
     }
 }
